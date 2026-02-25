@@ -4,6 +4,7 @@ enum AlertType {
   heartRate,
   weather,
   inactivity,
+  battery,
   manual;
 
   String toJson() => name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}');
