@@ -17,9 +17,9 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
 - [x] Task: Implement Supabase persistence in `AlertService` (1d5fc51)
     - [x] Write Tests: Mock Supabase client and verify `insert` calls on alert trigger
     - [x] Implement Feature: Connect service to the `alerts` table
-- [ ] Task: Implement Alert Deduplication Logic
-    - [ ] Write Tests: Define criteria for avoiding redundant alerts (e.g., time-based window)
-    - [ ] Implement Feature: Add deduplication logic to `triggerAlert`
+- [x] Task: Implement Alert Deduplication Logic (e9132f4)
+    - [x] Write Tests: Define criteria for avoiding redundant alerts (e.g., time-based window)
+    - [x] Implement Feature: Add deduplication logic to `triggerAlert`
 - [ ] Task: Conductor - User Manual Verification 'Backend Integration' (Protocol in workflow.md)
 
 ## Phase 3: Refactoring Existing Services
