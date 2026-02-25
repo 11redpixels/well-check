@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'package:well_check/models/alert_model.dart';
 import 'package:uuid/uuid.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AlertService {
+  final SupabaseClient _supabase;
   final _alertController = StreamController<Alert>.broadcast();
   final _uuid = const Uuid();
+
+  AlertService(this._supabase);
 
   Stream<Alert> get alertStream => _alertController.stream;
 
@@ -28,6 +32,8 @@ class AlertService {
     );
 
     _alertController.add(alert);
+
+    await _supabase.from('alerts').insert(alert.toJson());
   }
 
   void dispose() {
