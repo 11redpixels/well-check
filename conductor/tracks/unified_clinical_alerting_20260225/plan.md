@@ -12,7 +12,7 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
     - [x] Implement Feature: Create the service scaffold
 - [x] Task: Conductor - User Manual Verification 'Foundation' (Protocol in workflow.md)
 
-## Phase 2: Backend Integration & Logic
+## Phase 2: Backend Integration & Logic [checkpoint: 226b739]
 
 - [x] Task: Implement Supabase persistence in `AlertService` (1d5fc51)
     - [x] Write Tests: Mock Supabase client and verify `insert` calls on alert trigger
@@ -20,7 +20,7 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
 - [x] Task: Implement Alert Deduplication Logic (e9132f4)
     - [x] Write Tests: Define criteria for avoiding redundant alerts (e.g., time-based window)
     - [x] Implement Feature: Add deduplication logic to `triggerAlert`
-- [ ] Task: Conductor - User Manual Verification 'Backend Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Backend Integration' (Protocol in workflow.md)
 
 ## Phase 3: Refactoring Existing Services
 
