@@ -22,15 +22,15 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
     - [x] Implement Feature: Add deduplication logic to `triggerAlert`
 - [x] Task: Conductor - User Manual Verification 'Backend Integration' (Protocol in workflow.md)
 
-## Phase 3: Refactoring Existing Services
+## Phase 3: Refactoring Existing Services [checkpoint: 242d987]
 
 - [x] Task: Refactor `StitchSyncService` to use `AlertService` (2dea382)
     - [x] Write Tests: Update existing sync tests to verify `AlertService` interaction
     - [x] Implement Feature: Replace manual `notifier.triggerAlert` calls with `AlertService.trigger`
-- [ ] Task: Refactor `HardwareMonitorService` and `InactivityMonitorService`
-    - [ ] Write Tests: Verify hardware/inactivity alerts use the new unified service
-    - [ ] Implement Feature: Standardize alert triggers in background monitors
-- [ ] Task: Conductor - User Manual Verification 'Refactoring' (Protocol in workflow.md)
+- [x] Task: Refactor `HardwareMonitorService` and `InactivityMonitorService` (242d987)
+    - [x] Write Tests: Verify hardware/inactivity alerts use the new unified service
+    - [x] Implement Feature: Standardize alert triggers in background monitors
+- [x] Task: Conductor - User Manual Verification 'Refactoring' (Protocol in workflow.md)
 
 ## Phase 4: UI Integration & Vault
 
