@@ -4,7 +4,7 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
 
 ## Phase 1: Foundation & Data Models
 
-- [ ] Task: Define `Alert` model and `AlertSeverity`/`AlertType` enums in Dart
+- [x] Task: Define `Alert` model and `AlertSeverity`/`AlertType` enums in Dart (f169ff1)
     - [ ] Write Tests: Define expected serialization and validation for `Alert` model
     - [ ] Implement Feature: Create the model classes and enums
 - [ ] Task: Create `AlertService` interface and base implementation
