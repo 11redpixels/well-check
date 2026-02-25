@@ -34,9 +34,9 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
 
 ## Phase 4: UI Integration & Vault
 
-- [ ] Task: Implement `ActiveAlertsProvider` for real-time monitoring
-    - [ ] Write Tests: Verify stream emitting updates when database changes
-    - [ ] Implement Feature: Create Riverpod provider for real-time alerts
+- [x] Task: Implement `ActiveAlertsProvider` for real-time monitoring (1d6358a)
+    - [x] Write Tests: Verify stream emitting updates when database changes
+    - [x] Implement Feature: Create Riverpod provider for real-time alerts
 - [ ] Task: Update "Family Vault" (HistoryView) to display Unified Audit Trail
     - [ ] Write Tests: Verify the UI correctly renders the alert list with appropriate icons/colors
     - [ ] Implement Feature: Connect `HistoryView` to the new audit trail data source
