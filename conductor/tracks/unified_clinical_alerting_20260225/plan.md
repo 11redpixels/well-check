@@ -32,12 +32,12 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
     - [x] Implement Feature: Standardize alert triggers in background monitors
 - [x] Task: Conductor - User Manual Verification 'Refactoring' (Protocol in workflow.md)
 
-## Phase 4: UI Integration & Vault
+## Phase 4: UI Integration & Vault [checkpoint: 5dac2a5]
 
 - [x] Task: Implement `ActiveAlertsProvider` for real-time monitoring (1d6358a)
     - [x] Write Tests: Verify stream emitting updates when database changes
     - [x] Implement Feature: Create Riverpod provider for real-time alerts
-- [ ] Task: Update "Family Vault" (HistoryView) to display Unified Audit Trail
-    - [ ] Write Tests: Verify the UI correctly renders the alert list with appropriate icons/colors
-    - [ ] Implement Feature: Connect `HistoryView` to the new audit trail data source
-- [ ] Task: Conductor - User Manual Verification 'UI Integration' (Protocol in workflow.md)
+- [x] Task: Update "Family Vault" (HistoryView) to display Unified Audit Trail (5dac2a5)
+    - [x] Write Tests: Verify the UI correctly renders the alert list with appropriate icons/colors
+    - [x] Implement Feature: Connect `HistoryView` to the new audit trail data source
+- [x] Task: Conductor - User Manual Verification 'UI Integration' (Protocol in workflow.md)
