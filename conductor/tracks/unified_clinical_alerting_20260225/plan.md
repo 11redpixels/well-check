@@ -2,15 +2,15 @@
 
 This plan follows the Test-Driven Development (TDD) approach outlined in `workflow.md`.
 
-## Phase 1: Foundation & Data Models
+## Phase 1: Foundation & Data Models [checkpoint: 39a8493]
 
 - [x] Task: Define `Alert` model and `AlertSeverity`/`AlertType` enums in Dart (f169ff1)
-    - [ ] Write Tests: Define expected serialization and validation for `Alert` model
-    - [ ] Implement Feature: Create the model classes and enums
+    - [x] Write Tests: Define expected serialization and validation for `Alert` model
+    - [x] Implement Feature: Create the model classes and enums
 - [x] Task: Create `AlertService` interface and base implementation (fd20f2b)
-    - [ ] Write Tests: Define the contract for triggering alerts and fetching streams
-    - [ ] Implement Feature: Create the service scaffold
-- [ ] Task: Conductor - User Manual Verification 'Foundation' (Protocol in workflow.md)
+    - [x] Write Tests: Define the contract for triggering alerts and fetching streams
+    - [x] Implement Feature: Create the service scaffold
+- [x] Task: Conductor - User Manual Verification 'Foundation' (Protocol in workflow.md)
 
 ## Phase 2: Backend Integration & Logic
 
