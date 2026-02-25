@@ -50,5 +50,54 @@ void main() {
       verify(() => mockSupabase.from('alerts')).called(1);
       verify(() => mockQueryBuilder.insert(any())).called(1);
     });
+
+    test('Should deduplicate alerts of the same type for the same member within 1 minute', () async {
+      final profileId = 'profile-123';
+      final familyId = 'family-456';
+      
+      // Trigger first alert
+      await alertService.triggerAlert(
+        profileId: profileId,
+        familyId: familyId,
+        type: AlertType.heartRate,
+        severity: AlertSeverity.high,
+        message: 'High HR 1',
+      );
+
+      // Trigger second alert immediately (same type, same member)
+      await alertService.triggerAlert(
+        profileId: profileId,
+        familyId: familyId,
+        type: AlertType.heartRate,
+        severity: AlertSeverity.high,
+        message: 'High HR 2',
+      );
+
+      // Should only have inserted once
+      verify(() => mockQueryBuilder.insert(any())).called(1);
+    });
+
+    test('Should allow different alert types for the same member within 1 minute', () async {
+      final profileId = 'profile-123';
+      final familyId = 'family-456';
+      
+      await alertService.triggerAlert(
+        profileId: profileId,
+        familyId: familyId,
+        type: AlertType.heartRate,
+        severity: AlertSeverity.high,
+        message: 'High HR',
+      );
+
+      await alertService.triggerAlert(
+        profileId: profileId,
+        familyId: familyId,
+        type: AlertType.fall,
+        severity: AlertSeverity.critical,
+        message: 'Fall detected',
+      );
+
+      verify(() => mockQueryBuilder.insert(any())).called(2);
+    });
   });
 }
