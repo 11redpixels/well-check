@@ -24,9 +24,9 @@ This plan follows the Test-Driven Development (TDD) approach outlined in `workfl
 
 ## Phase 3: Refactoring Existing Services
 
-- [ ] Task: Refactor `StitchSyncService` to use `AlertService`
-    - [ ] Write Tests: Update existing sync tests to verify `AlertService` interaction
-    - [ ] Implement Feature: Replace manual `notifier.triggerAlert` calls with `AlertService.trigger`
+- [x] Task: Refactor `StitchSyncService` to use `AlertService` (2dea382)
+    - [x] Write Tests: Update existing sync tests to verify `AlertService` interaction
+    - [x] Implement Feature: Replace manual `notifier.triggerAlert` calls with `AlertService.trigger`
 - [ ] Task: Refactor `HardwareMonitorService` and `InactivityMonitorService`
     - [ ] Write Tests: Verify hardware/inactivity alerts use the new unified service
     - [ ] Implement Feature: Standardize alert triggers in background monitors
