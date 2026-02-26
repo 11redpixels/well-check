@@ -1,8 +1,0 @@
-{
-  "track_id": "unified_clinical_alerting_20260225",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-02-25T14:30:00Z",
-  "updated_at": "2026-02-25T14:30:00Z",
-  "description": "Implement Unified Clinical Alerting & Safety Audit Trail"
-}
