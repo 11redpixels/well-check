@@ -1,68 +1,93 @@
--- SUPABASE RLS LOCKDOWN (PHASE 1)
--- This script enforces strict HIPAA-grade isolation between families.
+-- SUPABASE RLS LOCKDOWN (V3 - CASCADE + ALL TABLES)
+-- This script enforces strict HIPAA-grade isolation between families while avoiding recursion.
 
--- 1. Helper function to get the current user's family_id
--- FIXED: Added SET search_path and use plpgsql to ensure RLS bypass.
-CREATE OR REPLACE FUNCTION get_my_family_id() 
+-- 1. DROP OLD FUNCTIONS WITH CASCADE
+DROP FUNCTION IF EXISTS public.current_user_family_id() CASCADE;
+DROP FUNCTION IF EXISTS public.get_my_family_id() CASCADE;
+DROP FUNCTION IF EXISTS public.get_auth_family_id() CASCADE;
+
+-- 2. RE-DEFINE THE HELPER FUNCTION WITH BEYOND-RLS PRIVILEGES
+-- We use SECURITY DEFINER and SET search_path to ensure it bypasses RLS correctly.
+CREATE OR REPLACE FUNCTION public.get_auth_family_id() 
 RETURNS UUID AS $$
-DECLARE
-  _family_id UUID;
 BEGIN
-  SELECT family_id INTO _family_id FROM public.profiles WHERE auth_id = auth.uid() LIMIT 1;
-  RETURN _family_id;
+  -- We query the table directly. Since this is SECURITY DEFINER, it bypasses RLS 
+  -- IF it is owned by a superuser (like postgres in Supabase).
+  RETURN (
+    SELECT family_id 
+    FROM public.profiles 
+    WHERE auth_id = auth.uid() 
+    LIMIT 1
+  );
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public;
 
--- 2. FAMILIES TABLE
-ALTER TABLE families ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Family isolation" ON families;
-CREATE POLICY "Family isolation" ON families
-  FOR ALL USING (id = get_my_family_id());
+-- 3. APPLY NEW NON-RECURSIVE POLICIES FOR ALL TABLES
 
--- 3. PROFILES TABLE
+-- A. PROFILES
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Profile isolation" ON public.profiles;
 DROP POLICY IF EXISTS "Profiles own access" ON public.profiles;
 DROP POLICY IF EXISTS "Profiles family access" ON public.profiles;
 
 -- Users can always see and manage their own profile (No recursion)
 CREATE POLICY "Profiles own access" ON public.profiles
-  FOR ALL USING (auth_id = auth.uid());
+  FOR ALL TO authenticated
+  USING (auth_id = auth.uid())
+  WITH CHECK (auth_id = auth.uid());
 
--- Users can see others in the same family (Uses helper function)
+-- Users can see others in the same family (Uses non-recursive helper)
 CREATE POLICY "Profiles family access" ON public.profiles
-  FOR SELECT USING (family_id = get_my_family_id());
+  FOR SELECT TO authenticated
+  USING (family_id = public.get_auth_family_id());
 
--- 4. MEDICATIONS TABLE
-ALTER TABLE medications ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Medication isolation" ON medications;
-CREATE POLICY "Medication isolation" ON medications
-  FOR ALL USING (family_id = get_my_family_id());
+-- B. FAMILIES
+ALTER TABLE public.families ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Family isolation" ON public.families;
+CREATE POLICY "Family isolation" ON public.families
+  FOR ALL TO authenticated
+  USING (id = public.get_auth_family_id());
 
--- 5. MEDICATION LOGS
-ALTER TABLE medication_logs ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Med log isolation" ON medication_logs;
-CREATE POLICY "Med log isolation" ON medication_logs
-  FOR ALL USING (
-    profile_id IN (SELECT id FROM public.profiles WHERE family_id = get_my_family_id())
+-- C. MEDICATIONS
+ALTER TABLE public.medications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Medication isolation" ON public.medications;
+CREATE POLICY "Medication isolation" ON public.medications
+  FOR ALL TO authenticated
+  USING (family_id = public.get_auth_family_id());
+
+-- D. MEDICATION LOGS
+ALTER TABLE public.medication_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Med log isolation" ON public.medication_logs;
+CREATE POLICY "Med log isolation" ON public.medication_logs
+  FOR ALL TO authenticated
+  USING (
+    profile_id IN (
+      SELECT id FROM public.profiles 
+      WHERE family_id = public.get_auth_family_id()
+    )
   );
 
--- 6. ALERTS TABLE
-ALTER TABLE alerts ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Alert isolation" ON alerts;
-CREATE POLICY "Alert isolation" ON alerts
-  FOR ALL USING (family_id = get_my_family_id());
+-- E. ALERTS
+ALTER TABLE public.alerts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Alert isolation" ON public.alerts;
+CREATE POLICY "Alert isolation" ON public.alerts
+  FOR ALL TO authenticated
+  USING (family_id = public.get_auth_family_id());
 
--- 7. VITALS LOG
-ALTER TABLE vitals_log ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Vitals isolation" ON vitals_log;
-CREATE POLICY "Vitals isolation" ON vitals_log
-  FOR ALL USING (
-    profile_id IN (SELECT id FROM public.profiles WHERE family_id = get_my_family_id())
+-- F. VITALS LOG
+ALTER TABLE public.vitals_log ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Vitals isolation" ON public.vitals_log;
+CREATE POLICY "Vitals isolation" ON public.vitals_log
+  FOR ALL TO authenticated
+  USING (
+    profile_id IN (
+      SELECT id FROM public.profiles 
+      WHERE family_id = public.get_auth_family_id()
+    )
   );
 
--- 8. MANAGED DEVICES
-ALTER TABLE managed_devices ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Device isolation" ON managed_devices;
-CREATE POLICY "Device isolation" ON managed_devices
-  FOR ALL USING (family_id = get_my_family_id());
+-- G. MANAGED DEVICES
+ALTER TABLE public.managed_devices ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Device isolation" ON public.managed_devices;
+CREATE POLICY "Device isolation" ON public.managed_devices
+  FOR ALL TO authenticated
+  USING (family_id = public.get_auth_family_id());
