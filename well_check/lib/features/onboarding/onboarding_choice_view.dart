@@ -123,7 +123,7 @@ class _OnboardingChoiceViewState extends ConsumerState<OnboardingChoiceView> {
       await Supabase.instance.client.from('profiles').upsert({
         'auth_id': user.id,
         'family_id': familyId,
-        'role': UserRole.familyHead.name,
+        'role': UserRole.familyHead.id,
         'first_name': user.userMetadata?['first_name'] ?? 'Leader',
         'is_managed': false,
         'is_authorized': true, // BIRTHRIGHT: Head is always authorized

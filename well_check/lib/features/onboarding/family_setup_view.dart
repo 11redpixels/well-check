@@ -59,7 +59,7 @@ class _FamilySetupViewState extends ConsumerState<FamilySetupView> {
       await Supabase.instance.client.from('profiles').insert({
         'auth_id': user.id,
         'family_id': familyId,
-        'role': UserRole.familyHead.name,
+        'role': UserRole.familyHead.id,
         'first_name': user.userMetadata?['first_name'] ?? 'Admin',
         'is_managed': false,
       });

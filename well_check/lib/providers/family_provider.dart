@@ -157,7 +157,7 @@ class FamilyMember {
     id: json['id'],
     name: json['first_name'],
     role: UserRole.values.firstWhere(
-      (e) => e.name == json['role'],
+      (e) => e.id == json['role'],
       orElse: () => UserRole.monitor,
     ),
     status:
@@ -370,7 +370,7 @@ class FamilyNotifier extends Notifier<List<FamilyMember>> {
         .from('profiles')
         .update({
           'status': status,
-          'aura_color': ?auraColor,
+          'aura_color': auraColor,
           'last_updated': DateTime.now().toIso8601String(),
         })
         .eq('id', profileId);
@@ -383,7 +383,7 @@ class FamilyNotifier extends Notifier<List<FamilyMember>> {
     await Supabase.instance.client.from('profiles').insert({
       'family_id': user.familyId,
       'first_name': firstName,
-      'role': role.name,
+      'role': role.id,
       'is_managed': true,
     });
   }
@@ -489,8 +489,8 @@ class FamilyNotifier extends Notifier<List<FamilyMember>> {
       UserAttributes(
         data: {
           'family_id': familyId,
-          'role': UserRole.member.name, // PRIMARY ROLE LOCKDOWN
-          'sub_role': selectedRole.name,
+          'role': UserRole.member.id, // PRIMARY ROLE LOCKDOWN
+          'sub_role': selectedRole.id,
           'is_authorized': false,
         },
       ),
@@ -500,8 +500,8 @@ class FamilyNotifier extends Notifier<List<FamilyMember>> {
     await Supabase.instance.client.from('profiles').upsert({
       'auth_id': user.id,
       'family_id': familyId,
-      'role': UserRole.member.name, // FORCE MEMBER ROLE
-      'sub_role': selectedRole.name, // STORE SUB-ROLE
+      'role': UserRole.member.id, // FORCE MEMBER ROLE
+      'sub_role': selectedRole.id, // STORE SUB-ROLE
       'first_name': user.userMetadata?['first_name'] ?? 'Member',
       'is_managed': false,
       'is_authorized': false,

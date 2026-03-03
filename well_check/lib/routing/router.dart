@@ -90,7 +90,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         final isAuthorized = profileResponse?['is_authorized'] ?? false;
 
         final role = UserRole.values.firstWhere(
-          (e) => e.name == roleStr,
+          (e) => e.id == roleStr,
           orElse: () => UserRole.member,
         );
 
@@ -123,11 +123,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           if (role == UserRole.familyHead) return '/family-head';
 
           // MEMBER ROUTING BASED ON SUB-ROLE
-          if (subRoleStr == 'protected' || roleStr == 'protected') {
+          if (subRoleStr == UserRole.protected.id || roleStr == UserRole.protected.id) {
             return '/elder-home';
           }
-          if (subRoleStr == 'minor' || roleStr == 'minor') return '/member-home';
-          if (subRoleStr == 'monitor' || roleStr == 'monitor') {
+          if (subRoleStr == UserRole.minor.id || roleStr == UserRole.minor.id) return '/member-home';
+          if (subRoleStr == UserRole.monitor.id || roleStr == UserRole.monitor.id) {
             return '/family-head';
           }
 

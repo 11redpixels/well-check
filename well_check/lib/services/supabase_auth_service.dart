@@ -113,8 +113,8 @@ class SupabaseAuthService {
           'auth_id': userId,
           'first_name': firstName,
           'role': role,
-          'status': role == UserRole.familyHead.name ? 'Active' : 'Pending',
-          'is_authorized': role == UserRole.familyHead.name,
+          'status': role == UserRole.familyHead.id ? 'Active' : 'Pending',
+          'is_authorized': role == UserRole.familyHead.id,
           'last_updated': DateTime.now().toIso8601String(),
           'is_managed': false,
         }, onConflict: 'auth_id');

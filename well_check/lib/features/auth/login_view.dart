@@ -35,7 +35,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
     setState(() => _isLoading = true);
     try {
       if (_isSignUp) {
-        final targetRole = _isJoining ? UserRole.member.name : UserRole.familyHead.name;
+        final targetRole = _isJoining ? UserRole.member.id : UserRole.familyHead.id;
         
         await ref.read(supabaseAuthProvider).signUp(
               _emailController.text.trim(),
