@@ -11,6 +11,7 @@ import 'package:well_check/widgets/sentinel_overlay.dart';
 import 'package:well_check/services/inactivity_monitor.dart'; // NEW
 import 'package:well_check/services/weather_sentinel.dart'; // NEW
 import 'package:well_check/services/emergency_voice_service.dart'; // NEW
+import 'package:well_check/services/location_service.dart';
 import 'package:well_check/services/supabase_auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:well_check/services/background_engine.dart';
@@ -18,11 +19,7 @@ import 'package:well_check/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-
-// ANTOINE: INJECT REAL CREDENTIALS HERE
-const String supabaseUrl = 'https://lravvptfltbfbfmbhomp.supabase.co';
-const String supabaseAnonKey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxyYXZ2cHRmbHRiZmJmbWJob21wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5OTQyMDgsImV4cCI6MjA4NzU3MDIwOH0.h1q2XuRI-nwPJhulmrnvP_ma5DrTqC85INTVDBzwHv0';
+import 'package:well_check/config/app_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +38,10 @@ Future<void> main() async {
     };
   }
 
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  await Supabase.initialize(
+    url: AppConfig.supabaseUrl,
+    anonKey: AppConfig.supabaseAnonKey,
+  );
 
   await SubscriptionService.init();
   await BackgroundEngine.initialize();
@@ -68,6 +68,7 @@ class _WellCheckAppState extends ConsumerState<WellCheckApp> {
       ref.read(inactivityMonitorProvider); // START INACTIVITY
       ref.read(weatherSentinelProvider); // START WEATHER
       ref.read(emergencyVoiceProvider); // START BLACK BOX PURGE
+      ref.read(locationServiceProvider).startTracking(); // START REAL LOCATION
     });
   }
 

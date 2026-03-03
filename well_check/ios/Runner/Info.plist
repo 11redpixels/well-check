@@ -77,5 +77,24 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Well-Check requires location access to monitor safe zones and provide real-time family safety updates.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Well-Check requires background location access to alert your family if you leave a safe zone or need emergency assistance.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Well-Check requires background location access to alert your family if you leave a safe zone or need emergency assistance.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Well-Check requires camera access to scan prescription labels and upload medical documents to your vault.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Well-Check requires microphone access for the emergency voice bridge and voice-activated safety check-ins.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Well-Check requires photo library access to save and upload medical records and prescription photos.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>
