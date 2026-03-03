@@ -14,6 +14,6 @@ import flutter_background_service_ios
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
-    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    // GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
   }
 }
