@@ -68,6 +68,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       final isLoggingIn = state.uri.path == '/login';
       final isOnboarding = state.uri.path == '/onboarding';
+      final isFamilySetup = state.uri.path == '/family-setup';
+      final isOnboardingChoice = state.uri.path == '/onboarding-choice';
 
       if (!isAuthenticated && !isLoggingIn && !isOnboarding) {
         return '/onboarding';
@@ -107,7 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         );
 
         // IF NO FAMILY ID, FORCE SETUP (Unless already on setup screen)
-        if (familyId == null && state.uri.path != '/onboarding-choice') {
+        if (familyId == null && state.uri.path != '/onboarding-choice' && state.uri.path != '/family-setup') {
           return '/onboarding-choice';
         }
 
@@ -119,7 +121,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return '/pending-approval';
         }
 
-        if (isLoggingIn || isOnboarding) {
+        if (isLoggingIn || isOnboarding || isFamilySetup || isOnboardingChoice) {
           if (role == UserRole.familyHead) return '/family-head';
 
           // MEMBER ROUTING BASED ON SUB-ROLE

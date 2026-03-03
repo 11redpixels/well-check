@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:well_check/models/user_role.dart';
 import 'package:well_check/providers/user_provider.dart';
 
+import 'package:go_router/go_router.dart';
+
 class FamilySetupView extends ConsumerStatefulWidget {
   const FamilySetupView({super.key});
 
@@ -16,6 +18,12 @@ class FamilySetupView extends ConsumerStatefulWidget {
 class _FamilySetupViewState extends ConsumerState<FamilySetupView> {
   final _familyNameController = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _familyNameController.dispose();
+    super.dispose();
+  }
 
   String _generateInviteCode() {
     const chars =
@@ -28,16 +36,27 @@ class _FamilySetupViewState extends ConsumerState<FamilySetupView> {
 
   Future<void> _createFamily() async {
     final name = _familyNameController.text.trim();
-    if (name.isEmpty) return;
+    print("DEBUG: _createFamily called with name: '$name'");
+    if (name.isEmpty) {
+      print("DEBUG: Name is empty, returning.");
+      return;
+    }
 
     setState(() => _isLoading = true);
     try {
       final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) return;
+      print("DEBUG: Current user ID: ${user?.id}");
+      if (user == null) {
+        print("DEBUG: User is null, returning.");
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
 
       final inviteCode = _generateInviteCode();
+      print("DEBUG: Generated invite code: $inviteCode");
 
       // 1. Create Family Entry
+      print("DEBUG: Inserting family entry...");
       final familyResponse = await Supabase.instance.client
           .from('families')
           .insert({
@@ -49,44 +68,56 @@ class _FamilySetupViewState extends ConsumerState<FamilySetupView> {
           .single();
 
       final familyId = familyResponse['id'];
+      print("DEBUG: Family created with ID: $familyId");
 
-      // 2. Update User Auth Metadata
+      // 2. Update User Auth Metadata (This might trigger a router redirect)
+      print("DEBUG: Updating user metadata...");
       await Supabase.instance.client.auth.updateUser(
         UserAttributes(data: {'family_id': familyId}),
       );
+      print("DEBUG: User metadata updated.");
 
       // 3. Create initial Admin Profile
-      await Supabase.instance.client.from('profiles').insert({
+      print("DEBUG: Upserting admin profile...");
+      await Supabase.instance.client.from('profiles').upsert({
         'auth_id': user.id,
         'family_id': familyId,
         'role': UserRole.familyHead.id,
         'first_name': user.userMetadata?['first_name'] ?? 'Admin',
         'is_managed': false,
-      });
+        'is_authorized': true,
+        'status': 'Active',
+      }, onConflict: 'auth_id');
+      print("DEBUG: Admin profile upserted.");
 
       // 4. Update Local State Immediately
-      // This forces the GoRouter redirect logic to re-evaluate with the new familyId
+      print("DEBUG: Updating local state...");
       ref.read(userProvider.notifier).setRole(
             UserRole.familyHead,
             id: user.id,
             familyId: familyId,
             firstName: user.userMetadata?['first_name'] ?? 'Admin',
+            isAuthorized: true,
           );
+      print("DEBUG: Local state updated.");
 
-      // Local state will be updated by the router's redirect listener
       if (mounted) {
+        print("DEBUG: Showing success snackbar.");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Welcome to the $name Family Shield!")),
         );
+        print("DEBUG: Navigating to /family-head");
+        context.go('/family-head');
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print("DEBUG: Error in _createFamily: $e");
+      print("DEBUG: Stack trace: $stack");
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("Setup Error: $e")));
+        setState(() => _isLoading = false);
       }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 

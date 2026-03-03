@@ -23,9 +23,12 @@ import 'package:well_check/config/app_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  print("INIT: WidgetsFlutterBinding initialized");
 
   if (!kIsWeb) {
+    print("INIT: Initializing Firebase...");
     await Firebase.initializeApp();
+    print("INIT: Firebase initialized");
 
     // CRASHLYTICS SETUP
     FlutterError.onError = (errorDetails) {
@@ -38,15 +41,30 @@ Future<void> main() async {
     };
   }
 
+  print("INIT: Initializing Supabase...");
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,
     anonKey: AppConfig.supabaseAnonKey,
   );
+  print("INIT: Supabase initialized");
 
+  print("INIT: Initializing SubscriptionService...");
   await SubscriptionService.init();
-  await BackgroundEngine.initialize();
-  await NotificationService.initialize();
+  print("INIT: SubscriptionService initialized");
 
+  print("INIT: Initializing BackgroundEngine...");
+  try {
+    await BackgroundEngine.initialize().timeout(const Duration(seconds: 10));
+    print("INIT: BackgroundEngine initialized");
+  } catch (e) {
+    print("INIT: BackgroundEngine FAILED/TIMEOUT: $e");
+  }
+
+  print("INIT: Initializing NotificationService...");
+  await NotificationService.initialize();
+  print("INIT: NotificationService initialized");
+
+  print("INIT: Starting runApp");
   runApp(const ProviderScope(child: WellCheckApp()));
 }
 
