@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:well_check/services/supabase_auth_service.dart';
-import 'package:well_check/providers/family_provider.dart';
 import 'package:well_check/models/user_role.dart';
 
 class LoginView extends ConsumerStatefulWidget {
-  const LoginView({super.key});
+  final String? inviteCode;
+  const LoginView({super.key, this.inviteCode});
 
   @override
   ConsumerState<LoginView> createState() => _LoginViewState();
@@ -22,29 +22,26 @@ class _LoginViewState extends ConsumerState<LoginView> {
   bool _isJoining = false;
   bool _showEmailVerification = false;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.inviteCode != null) {
+      _inviteController.text = widget.inviteCode!;
+      _isJoining = true;
+    }
+  }
+
   Future<void> _handleAuth() async {
     setState(() => _isLoading = true);
     try {
-      if (_isJoining) {
-        // 1. Sign up/in first
-        await ref
-            .read(supabaseAuthProvider)
-            .signIn(
-              _emailController.text.trim(),
-              _passwordController.text.trim(),
-            );
-        // 2. Join Family
-        await ref
-            .read(familyProvider.notifier)
-            .joinFamily(_inviteController.text.trim());
-      } else if (_isSignUp) {
-        await ref
-            .read(supabaseAuthProvider)
-            .signUp(
+      if (_isSignUp) {
+        final targetRole = _isJoining ? UserRole.member.name : UserRole.familyHead.name;
+        
+        await ref.read(supabaseAuthProvider).signUp(
               _emailController.text.trim(),
               _passwordController.text.trim(),
               _firstNameController.text.trim(),
-              UserRole.familyHead.name,
+              targetRole,
             );
         if (mounted) {
           setState(() {
@@ -52,9 +49,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           });
         }
       } else {
-        await ref
-            .read(supabaseAuthProvider)
-            .signIn(
+        await ref.read(supabaseAuthProvider).signIn(
               _emailController.text.trim(),
               _passwordController.text.trim(),
             );

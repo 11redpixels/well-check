@@ -1,0 +1,18 @@
+# OS X
+.DS_Store
+**/.DS_Store
+
+# Root-level ignored files
+well_check/Archive.zip
+
+# Flutter/Dart related
+well_check/.dart_tool/
+well_check/build/
+well_check/.idea/
+well_check/.metadata
+well_check/.flutter-plugins-dependencies
+well_check/.pub-cache/
+well_check/.pub/
+
+# Supabase
+supabase/functions/.env

@@ -14,6 +14,17 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='auth_id') THEN
     ALTER TABLE public.profiles ADD COLUMN auth_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='first_name') THEN
+    ALTER TABLE public.profiles ADD COLUMN first_name TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='is_authorized') THEN
+    ALTER TABLE public.profiles ADD COLUMN is_authorized BOOLEAN DEFAULT false;
+  ELSE
+    ALTER TABLE public.profiles ALTER COLUMN is_authorized SET DEFAULT false;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='sub_role') THEN
+    ALTER TABLE public.profiles ADD COLUMN sub_role TEXT;
+  END IF;
 
   -- 2. REPAIR VITALS_LOG
   IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'vitals_log') THEN

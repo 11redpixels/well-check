@@ -61,14 +61,6 @@ class _WellCheckAppState extends ConsumerState<WellCheckApp> {
   void initState() {
     super.initState();
 
-    // EMERGENCY: FORCE LOGOUT TO CLEAR STUCK SESSION
-    // ANTOINE: Remove this block once the session loop is resolved
-    final session = Supabase.instance.client.auth.currentSession;
-    if (session != null) {
-      debugPrint("EMERGENCY | Stuck session detected. Clearing...");
-      Supabase.instance.client.auth.signOut();
-    }
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(supabaseAuthProvider).initializeAuthListener();
       ref.read(stitchSyncProvider);

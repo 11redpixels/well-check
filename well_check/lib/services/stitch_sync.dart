@@ -57,6 +57,8 @@ class StitchSyncService {
     final user = ref.read(userProvider);
 
     for (final m in members) {
+      if (!m.isAuthorized) continue; // Skip unauthorized members
+
       if (m.role == UserRole.protected) {
         final now = DateTime.now();
         final hasFallen = _random.nextDouble() > 0.98;

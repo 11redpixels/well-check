@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374662350865",
+    "project_id": "well-check2026",
+    "storage_bucket": "well-check2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374662350865:android:d4b62422de640bc06689b0",
+        "android_client_info": {
+          "package_name": "com.anwiik.well_check"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4eOxQltuV26zxJdmGQSMyMGKObaCMYHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
